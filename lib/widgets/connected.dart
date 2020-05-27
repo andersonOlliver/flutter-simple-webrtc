@@ -1,0 +1,76 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:simple_webrtc/blocs/app_state.dart';
+import 'package:simple_webrtc/blocs/app_state_bloc.dart';
+import 'package:simple_webrtc/blocs/app_state_events.dart';
+
+class Connected extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final appStateBlock = BlocProvider.of<AppStateBloc>(context);
+
+    return BlocBuilder<AppStateBloc, AppState>(
+      builder: (BuildContext context, AppState state) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(50),
+              child: Image.network(
+                state.me.avatar,
+                width: 100,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(state.me.name),
+            SizedBox(
+              height: 30,
+            ),
+            Column(
+              children: state.heroes.values
+                  .where((item) => item.name != state.me.name)
+                  .map((hero) => Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 5, horizontal: 25),
+                        child: Opacity(
+                          opacity: hero.isTaken ? 1 : 0.3,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(30),
+                                    child: Image.network(
+                                      hero.avatar,
+                                      width: 60,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(hero.name)
+                                ],
+                              ),
+                              FloatingActionButton(
+                                onPressed: () {
+                                  if (hero.isTaken) {
+                                    appStateBlock.add(CallingEvent(hero));
+                                  }
+                                },
+                                child: Icon(Icons.call),
+                              )
+                            ],
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            )
+          ],
+        );
+      },
+    );
+  }
+}
