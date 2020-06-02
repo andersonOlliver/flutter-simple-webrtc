@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_webrtc/rtc_video_view.dart';
 import 'package:simple_webrtc/blocs/app_state.dart';
 import 'package:simple_webrtc/blocs/app_state_bloc.dart';
 import 'package:simple_webrtc/blocs/app_state_events.dart';
@@ -14,7 +16,71 @@ class InCalling extends StatelessWidget {
         return Stack(
           alignment: Alignment.center,
           children: [
-            Text('Chamada em Andamento'),
+            Positioned.fill(
+              child: Transform.scale(
+                scale: 2,
+                alignment: Alignment.center,
+                child: RTCVideoView(appStateBlock.remoteRenderer),
+              ),
+            ),
+            Positioned(
+              left: 20,
+              bottom: 100,
+              child: SafeArea(
+                child: Transform.scale(
+                  scale: 0.3,
+                  alignment: Alignment.bottomLeft,
+                  child: ClipRRect(
+                    child: Container(
+                      width: 480,
+                      height: 640,
+                      color: Color(0xffcccccc),
+                      child: RTCVideoView(appStateBlock.localRenderer),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 10,
+              child: SafeArea(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  FloatingActionButton(
+                    onPressed: () {
+                      appStateBlock.add(MuteEvent(!state.mute));
+                    },
+                    heroTag: 'mic',
+                    backgroundColor:
+                        Colors.blueAccent.withOpacity(state.mute ? 0.3 : 1),
+                    child: Icon(state.mute ? Icons.mic_off : Icons.mic),
+                  ),
+                  CupertinoButton(
+                    onPressed: () {
+                      appStateBlock.add(FinishCallEvent());
+                    },
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    borderRadius: BorderRadius.circular(30),
+                    color: Colors.redAccent,
+                    child: Icon(Icons.call),
+                  ),
+                  FloatingActionButton(
+                    onPressed: () {
+                      appStateBlock.add(
+                        SwitchCameraEvent(!state.isFrontCamera),
+                      );
+                    },
+                    heroTag: 'cam',
+                    child: Icon(state.isFrontCamera
+                        ? Icons.camera_front
+                        : Icons.camera_rear),
+                  ),
+                ],
+              )),
+            )
           ],
         );
       },

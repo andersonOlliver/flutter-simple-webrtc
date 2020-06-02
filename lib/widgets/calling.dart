@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_webrtc/blocs/app_state.dart';
 import 'package:simple_webrtc/blocs/app_state_bloc.dart';
+import 'package:simple_webrtc/blocs/app_state_events.dart';
 
 class Calling extends StatelessWidget {
   @override
@@ -25,7 +26,9 @@ class Calling extends StatelessWidget {
               height: 20,
             ),
             FloatingActionButton(
-              onPressed: () {},
+              onPressed: () {
+                appStateBlock.add(CancelRequestEvent());
+              },
               backgroundColor: Colors.redAccent,
               child: Icon(Icons.call_end),
             )

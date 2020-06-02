@@ -33,6 +33,8 @@ dependencies:
   bloc: ^4.0.0
   flutter_bloc: ^4.0.0
   equatable: ^1.1.1
+  flutter_incall_manager:
+    git: https://github.com/GioviQ/flutter-incall-manager.git
 
 dev_dependencies:
   flutter_test:
